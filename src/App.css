@@ -1,0 +1,20 @@
+.page-container {
+  display: grid;
+  grid-template-rows: 64px auto;
+  height: 100vh;
+}
+
+.page-content {
+  display: flex;
+  align-items: center;
+  flex-flow: row;
+  justify-content: center;
+  height: 100%;
+}
+
+.form-container {
+  width: 250px;
+}
+.drawer-content{
+  width: 250px;
+}
