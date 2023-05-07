@@ -13,8 +13,18 @@
 }
 
 .form-container {
+  width: 300px;
+  padding: 10px;
+}
+
+.drawer-content {
   width: 250px;
 }
-.drawer-content{
-  width: 250px;
+
+div.avatar {
+  width: 128px;
+  height: 128px;
+  border: 1px solid grey;
+  margin: auto;
+  cursor: pointer;
 }

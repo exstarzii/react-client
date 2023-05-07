@@ -1,21 +1,23 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Layout from "../Components/Layout";
+import NotificationBar from "../Components/NotificationBar";
 
 interface Credentials {
   nickname: string;
   phone: string;
 }
 function Signup() {
+  const API_URL = process.env.REACT_APP_API;
   const [credentials, setCredentials] = useState<Credentials>({
     nickname: "",
     phone: "",
   });
-  const [error, setError] = useState<string>("");
+  const notifyRef = useRef(null);
   const navigate = useNavigate();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,18 +27,30 @@ function Signup() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await axios.post("/api/auth", credentials);
-      const token = response.data.access_token;
-      localStorage.setItem("token", token);
-      navigate("/");
+      //fix phone number with 8... instead of +7...
+      if (credentials.phone[0] == "8") {
+        credentials.phone = "+7" + credentials.phone.substring(1);
+      }
+      const response = await axios.post(`${API_URL}/user`, credentials);
+      // console.log("Account created")
+      const ref: any = notifyRef.current;
+      ref.showMesssage("Account created", "success");
+      setTimeout(()=>{
+        navigate("/login");
+      },1000)
+      
     } catch (error: any) {
-      setError(error.response.data.message);
+      const mes = error.response.data.message.join(", ");
+      console.log(mes);
+      const ref: any = notifyRef.current;
+      ref.showMesssage(mes || error.message, "error");
     }
   };
 
   return (
     <div className="page-container">
       <Layout />
+      <NotificationBar ref={notifyRef} />
       <div className="page-content">
         <div className="form-container">
           <form onSubmit={handleSubmit}>
@@ -64,7 +78,6 @@ function Signup() {
               fullWidth
               required
             />
-            {error && <div>{error}</div>}
             <Button type="submit" variant="contained" color="primary" fullWidth>
               Sign up
             </Button>

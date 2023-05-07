@@ -6,17 +6,79 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Drawer from "@mui/material/Drawer";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/Inbox';
-import DraftsIcon from '@mui/icons-material/Drafts';
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 
-function Layout() {
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PersonIcon from '@mui/icons-material/Person';
+import NewspaperIcon from '@mui/icons-material/Newspaper';
+import PeopleIcon from '@mui/icons-material/People';
+
+const Layout = () => {
   const [state, setState] = React.useState(false);
   const navigate = useNavigate();
+  const essentialLinks = [
+    {
+      title: "Login",
+      icon: <LoginIcon/>,
+      link: "/login",
+    },
+    {
+      title: "Signup",
+      icon: <LoginIcon/>,
+      link: "/signup",
+    },
+  ];
+  const listItems = essentialLinks.map((link,i) => (
+    <ListItem disablePadding key={i}>
+      <ListItemButton onClick={() => navigate(link.link)}>
+        <ListItemIcon>
+          {link.icon}
+        </ListItemIcon>
+        <ListItemText primary={link.title} />
+      </ListItemButton>
+    </ListItem>
+  ));
+  const authlinksList = [
+    {
+      title: "Account details",
+      icon: <PersonIcon/>,
+      link: "/user",
+    },
+    {
+      title: "Posts",
+      icon: <NewspaperIcon/>,
+      link: "/posts",
+    },
+    {
+      title: "Friends",
+      icon: <PeopleIcon/>,
+      link: "/friends",
+    },
+    {
+      title: "Log out",
+      icon: <LogoutIcon/>,
+      link: "/login",
+      onClick: () => {
+        localStorage.token = ''
+      },
+    },
+  ];
+  const authListItems = authlinksList.map((link,i) => (
+    <ListItem disablePadding key={i}>
+      <ListItemButton onClick={() => {navigate(link.link);if(link.onClick)link.onClick()}}>
+        <ListItemIcon>
+          {link.icon}
+        </ListItemIcon>
+        <ListItemText primary={link.title} />
+      </ListItemButton>
+    </ListItem>
+  ));
+  const token = localStorage.token;
 
   return (
     <AppBar position="static">
@@ -36,28 +98,13 @@ function Layout() {
         </Typography>
       </Toolbar>
       <Drawer anchor="left" open={state} onClose={() => setState(false)}>
-      <nav aria-label="main mailbox folders" className="drawer-content">
-        <List>
-          <ListItem disablePadding>
-            <ListItemButton onClick={()=>navigate("/login")} >
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary="Login"/>
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton onClick={()=>navigate("/signup")}>
-              <ListItemIcon>
-                <DraftsIcon />
-              </ListItemIcon>
-              <ListItemText primary="Sign Up"/>
-            </ListItemButton>
-          </ListItem>
-        </List>
-      </nav>
+        <nav aria-label="main mailbox folders" className="drawer-content">
+          <List>
+            {token?authListItems:listItems}
+          </List>
+        </nav>
       </Drawer>
     </AppBar>
   );
-}
+};
 export default Layout;

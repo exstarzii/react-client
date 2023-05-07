@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Layout from "../Components/Layout";
 import Typography from "@mui/material/Typography";
+import React from "react";
+import NotificationBar from "../Components/NotificationBar";
 
 interface Credentials {
   nickname: string;
@@ -12,12 +14,13 @@ interface Credentials {
 }
 
 function Login() {
+  const API_URL = process.env.REACT_APP_API;
   const [credentials, setCredentials] = useState<Credentials>({
     nickname: "",
     code: "",
   });
-  const [error, setError] = useState<string>("");
   const navigate = useNavigate();
+  const notifyRef = useRef(null);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({ ...credentials, [event.target.name]: event.target.value });
@@ -26,18 +29,22 @@ function Login() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await axios.post("/api/auth", credentials);
+      const response = await axios.post(`${API_URL}/user/login`, credentials);
       const token = response.data.access_token;
       localStorage.setItem("token", token);
-      navigate("/");
+      navigate("/user");
     } catch (error: any) {
-      setError(error.response.data.message);
+      const mes = error.response.data.message.join(", ");
+      console.log(mes);
+      const ref: any = notifyRef.current;
+      ref.showMesssage(mes || error.message, "error");
     }
   };
 
   return (
     <div className="page-container">
       <Layout />
+      <NotificationBar ref={notifyRef} />
       <div className="page-content">
         <div className="form-container">
           <form onSubmit={handleSubmit}>
@@ -65,7 +72,6 @@ function Login() {
               fullWidth
               required
             />
-            {error && <div>{error}</div>}
             <Button type="submit" variant="contained" color="primary" fullWidth>
               Sign In
             </Button>
