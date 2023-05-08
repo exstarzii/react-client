@@ -60,6 +60,11 @@ const Layout = () => {
       link: "/friends",
     },
     {
+      title: "People",
+      icon: <PeopleIcon/>,
+      link: "/people",
+    },
+    {
       title: "Log out",
       icon: <LogoutIcon/>,
       link: "/login",

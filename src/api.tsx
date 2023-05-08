@@ -2,17 +2,18 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API;
-interface Credentials {
-  nickname: string;
-  phone: string;
-  photo: string;
-  name: string;
-  surename: string;
-  email: string;
-  age: string;
-  sex: string;
-  city: string;
-  about: string;
+export interface Credentials {
+  _id?:string
+  nickname?: string;
+  phone?: string;
+  photo?: string;
+  name?: string;
+  surename?: string;
+  email?: string;
+  age?: string;
+  sex?: string;
+  city?: string;
+  about?: string;
 }
 const useGetUser = (): [Credentials, Dispatch<SetStateAction<Credentials>>] => {
   const [user, setUser] = useState<Credentials>({
@@ -58,6 +59,25 @@ const useGetUser = (): [Credentials, Dispatch<SetStateAction<Credentials>>] => {
   return [user, setUser];
 };
 
+const useGetPeople = (): [[Credentials], Dispatch<SetStateAction<[Credentials]>>] => {
+  const [users, setUsers] = useState<[Credentials]>([{}]);
+  useEffect(() => {
+    const token = localStorage.token;
+    axios
+      .get(`${API_URL}/user/all`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setUsers(response.data);
+      })
+      .catch((error) => handleError(error));
+  }, []);
+  return [users, setUsers];
+};
+
 const useUpdateUser = (credentials: any) => {
   const token = localStorage.token;
   let body: any = {};
@@ -88,4 +108,5 @@ function handleError(error: any) {
 export default {
   useUpdateUser,
   useGetUser,
+  useGetPeople,
 };

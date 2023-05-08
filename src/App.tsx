@@ -6,6 +6,7 @@ import Login from './Pages/Login';
 import User from './Pages/User';
 import ErrorPage from './Pages/ErrorPage';
 import UserEdit from './Pages/UserEdit';
+import People from './Pages/People';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/user" element={<User />}/>
         <Route path="/user/:id" element={<User />}/>
         <Route path="/useredit" element={<UserEdit />}/>
+        <Route path="/people" element={<People />}/>
         <Route path="/*" element={<ErrorPage/>}/>
       </Routes>
     </BrowserRouter>

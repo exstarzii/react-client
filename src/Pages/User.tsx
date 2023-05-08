@@ -10,6 +10,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import Avatar from "@mui/material/Avatar";
 import api from "../api";
 
 const rows = [
@@ -65,14 +66,14 @@ function EditInfoButton({ id }: any) {
 function User() {
   let { id } = useParams();
   const [credentials, setCredentials] =  api.useGetUser();
-  rows[0].col2 = credentials.name
-  rows[1].col2 = credentials.surename
-  rows[2].col2 = credentials.email
-  rows[3].col2 = credentials.age
-  rows[4].col2 = credentials.phone
-  rows[5].col2 = credentials.sex
-  rows[6].col2 = credentials.city
-  rows[7].col2 = credentials.about
+  rows[0].col2 = credentials.name || ''
+  rows[1].col2 = credentials.surename|| ''
+  rows[2].col2 = credentials.email|| ''
+  rows[3].col2 = credentials.age|| ''
+  rows[4].col2 = credentials.phone|| ''
+  rows[5].col2 = credentials.sex|| ''
+  rows[6].col2 = credentials.city|| ''
+  rows[7].col2 = credentials.about|| ''
   return (
     <div className="page-container">
       <Layout />
@@ -82,6 +83,15 @@ function User() {
             <Typography variant="h4" align="center">
               User info
             </Typography>
+            <Avatar
+                alt="avatar"
+                src={
+                  credentials.photo == ""
+                    ? "placeholder.png"
+                    : credentials.photo
+                }
+                className="avatar"
+              />
             <Table aria-label="simple table">
               <TableBody>
                 {rows
