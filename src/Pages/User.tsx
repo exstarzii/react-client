@@ -5,13 +5,15 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import api from "../api";
+import jwt_decode from "jwt-decode";
+import NotificationBar from "../Components/NotificationBar";
+import { useRef } from "react";
 
 const rows = [
   {
@@ -28,6 +30,10 @@ const rows = [
   },
   {
     col1: "Age",
+    col2: "",
+  },
+  {
+    col1: "Nickname",
     col2: "",
   },
   {
@@ -48,35 +54,45 @@ const rows = [
   },
 ];
 
-function EditInfoButton({ id }: any) {
-  const navigate = useNavigate();
-  return !id ? (
-    <Button
-      type="button"
-      variant="contained"
-      color="primary"
-      fullWidth
-      onClick={() => navigate("/useredit")}
-    >
-      Edit
-    </Button>
-  ) : null;
-}
-
 function User() {
   let { id } = useParams();
-  const [credentials, setCredentials] =  api.useGetUser();
-  rows[0].col2 = credentials.name || ''
-  rows[1].col2 = credentials.surename|| ''
-  rows[2].col2 = credentials.email|| ''
-  rows[3].col2 = credentials.age|| ''
-  rows[4].col2 = credentials.phone|| ''
-  rows[5].col2 = credentials.sex|| ''
-  rows[6].col2 = credentials.city|| ''
-  rows[7].col2 = credentials.about|| ''
+  const [credentials, setCredentials] = api.useGetUserById(id || "");
+  const payload: any = jwt_decode(localStorage.token);
+  const notifyRef = useRef(null);
+  const navigate = useNavigate();
+  // console.log(id,payload)
+
+  rows[0].col2 = credentials.name || "";
+  rows[1].col2 = credentials.surename || "";
+  rows[2].col2 = credentials.email || "";
+  rows[3].col2 = credentials.age || "";
+  rows[4].col2 = credentials.nickname || "";
+  rows[5].col2 = credentials.phone || "";
+  rows[6].col2 = credentials.sex || "";
+  rows[7].col2 = credentials.city || "";
+  rows[8].col2 = credentials.about || "";
+
+  const AddFriendHandle = () => {
+    api.useAddFriend(id || "").then((response:any) => {
+      console.log(response);
+      const ref: any = notifyRef.current;
+      ref.showMesssage("Congratulations! Now you have a new friend", "success");
+      setCredentials(response.data);
+    });
+  };
+  const DelFriendHandle = () => {
+    api.useDelFriend(id || "").then((response:any) => {
+      console.log(response);
+      const ref: any = notifyRef.current;
+      ref.showMesssage("Deleted", "success");
+      setCredentials(response.data);
+    });
+  };
+
   return (
     <div className="page-container">
       <Layout />
+      <NotificationBar ref={notifyRef} />
       <div className="page-content">
         <div className="form-container">
           <TableContainer component={Paper}>
@@ -84,14 +100,12 @@ function User() {
               User info
             </Typography>
             <Avatar
-                alt="avatar"
-                src={
-                  credentials.photo == ""
-                    ? "placeholder.png"
-                    : credentials.photo
-                }
-                className="avatar"
-              />
+              alt="avatar"
+              src={
+                credentials.photo == "" ? "placeholder.png" : credentials.photo
+              }
+              className="avatar"
+            />
             <Table aria-label="simple table">
               <TableBody>
                 {rows
@@ -111,7 +125,38 @@ function User() {
                   ))}
               </TableBody>
             </Table>
-            <EditInfoButton id={id} />
+            {!id || id == payload.sub ? (
+              <Button
+                type="button"
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={() => navigate("/useredit")}
+              >
+                Edit
+              </Button>
+            ) : credentials.friends &&
+              credentials.friends.includes(payload.sub) ? (
+              <Button
+                type="button"
+                variant="contained"
+                color="error"
+                fullWidth
+                onClick={DelFriendHandle}
+              >
+                Delete from friends
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={AddFriendHandle}
+              >
+                Add to friends
+              </Button>
+            )}
           </TableContainer>
         </div>
       </div>

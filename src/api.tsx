@@ -3,7 +3,7 @@ import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API;
 export interface Credentials {
-  _id?:string
+  _id?: string;
   nickname?: string;
   phone?: string;
   photo?: string;
@@ -14,57 +14,67 @@ export interface Credentials {
   sex?: string;
   city?: string;
   about?: string;
+  friends?:[string];
 }
 const useGetUser = (): [Credentials, Dispatch<SetStateAction<Credentials>>] => {
-  const [user, setUser] = useState<Credentials>({
-    nickname: "",
-    phone: "",
-    photo: "",
-    name: "",
-    surename: "",
-    email: "",
-    age: "",
-    sex: "",
-    city: "",
-    about: "",
-  });
+  return useGetUserById("");
+};
+
+const useGetUserById = (
+  _id: string
+): [Credentials, Dispatch<SetStateAction<Credentials>>] => {
+  const [user, setUser] = useState<Credentials>({});
+  useEffect(() => {
+    const token = localStorage.token;
+    let url;
+    if (!_id) url = `${API_URL}/user`;
+    else url = `${API_URL}/user/${_id}`;
+    axios
+      .get(url, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .then((response) => {
+        console.log("useGetUserById", response);
+        setUser(response.data);
+      })
+      .catch((error) => handleError(error));
+  }, [_id]);
+  return [user, setUser];
+};
+
+const useGetPeople = (): [
+  [Credentials],
+  Dispatch<SetStateAction<[Credentials]>>
+] => {
+  const [users, setUsers] = useState<[Credentials]>([{}]);
   useEffect(() => {
     const token = localStorage.token;
     axios
-      .get(`${API_URL}/user`, {
+      .get(`${API_URL}/user/all`, {
         headers: {
           Authorization: "Bearer " + token,
         },
       })
       .then((response) => {
         console.log(response);
-        response.data.nickname = response.data.nickname
-          ? response.data.nickname
-          : "";
-        response.data.phone = response.data.phone ? response.data.phone : "";
-        response.data.photo = response.data.photo ? response.data.photo : "";
-        response.data.name = response.data.name ? response.data.name : "";
-        response.data.surename = response.data.surename
-          ? response.data.surename
-          : "";
-        response.data.email = response.data.email ? response.data.email : "";
-        response.data.age = response.data.age ? response.data.age : "";
-        response.data.sex = response.data.sex ? response.data.sex : "";
-        response.data.city = response.data.city ? response.data.city : "";
-        response.data.about = response.data.about ? response.data.about : "";
-        setUser(response.data);
+        setUsers(response.data);
       })
       .catch((error) => handleError(error));
   }, []);
-  return [user, setUser];
+  return [users, setUsers];
 };
 
-const useGetPeople = (): [[Credentials], Dispatch<SetStateAction<[Credentials]>>] => {
+const useGetFriends = (): [
+  [Credentials],
+  Dispatch<SetStateAction<[Credentials]>>
+] => {
   const [users, setUsers] = useState<[Credentials]>([{}]);
   useEffect(() => {
     const token = localStorage.token;
     axios
-      .get(`${API_URL}/user/all`, {
+      .get(`${API_URL}/user/friends`, {
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -101,6 +111,37 @@ const useUpdateUser = (credentials: any) => {
   );
 };
 
+const useAddFriend = (id: string) => {
+  const token = localStorage.token;
+  return axios
+    .post(
+      `${API_URL}/user/friends`,
+      {
+        _id:id,
+      },
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    )
+    .catch((error) => handleError(error));
+};
+
+const useDelFriend = (id: string) => {
+  const token = localStorage.token;
+  return axios
+    .delete(
+      `${API_URL}/user/friends/${id}`,
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    )
+    .catch((error) => handleError(error));
+};
+
 function handleError(error: any) {
   console.log(error.response);
 }
@@ -109,4 +150,8 @@ export default {
   useUpdateUser,
   useGetUser,
   useGetPeople,
+  useGetUserById,
+  useAddFriend,
+  useGetFriends,
+  useDelFriend
 };

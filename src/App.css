@@ -26,5 +26,7 @@ div.avatar {
   height: 128px;
   border: 1px solid grey;
   margin: auto;
+}
+.cursor-pointer{
   cursor: pointer;
 }

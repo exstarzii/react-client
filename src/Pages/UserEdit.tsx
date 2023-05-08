@@ -12,19 +12,6 @@ import api from "../api";
 import { useNavigate } from "react-router-dom";
 import NotificationBar from "../Components/NotificationBar";
 
-interface Credentials {
-  nickname: string;
-  phone: string;
-  photo: string;
-  name: string;
-  surename: string;
-  email: string;
-  age: number;
-  sex: string;
-  city: string;
-  about: string;
-}
-
 function UserEdit() {
   const [credentials, setCredentials] = api.useGetUser();
   const navigate = useNavigate();
@@ -79,7 +66,7 @@ function UserEdit() {
                     ? "placeholder.png"
                     : credentials.photo
                 }
-                className="avatar"
+                className="avatar cursor-pointer"
               />
               <input
                 id="fileInput"
@@ -91,7 +78,7 @@ function UserEdit() {
             <TextField
               label="Nickname"
               name="nickname"
-              value={credentials.nickname}
+              value={credentials.nickname||''}
               onChange={handleChange}
               margin="normal"
               variant="outlined"
@@ -104,7 +91,7 @@ function UserEdit() {
               label="Phone"
               name="phone"
               type="phone"
-              value={credentials.phone}
+              value={credentials.phone||''}
               onChange={handleChange}
               margin="normal"
               variant="outlined"
@@ -117,7 +104,7 @@ function UserEdit() {
               label="name"
               name="name"
               type="text"
-              value={credentials.name}
+              value={credentials.name||''}
               onChange={handleChange}
               margin="normal"
               variant="outlined"
@@ -127,7 +114,7 @@ function UserEdit() {
               label="surename"
               name="surename"
               type="text"
-              value={credentials.surename}
+              value={credentials.surename||''}
               onChange={handleChange}
               margin="normal"
               variant="outlined"
@@ -137,7 +124,7 @@ function UserEdit() {
               label="email"
               name="email"
               type="email"
-              value={credentials.email}
+              value={credentials.email||''}
               onChange={handleChange}
               margin="normal"
               variant="outlined"
@@ -147,7 +134,7 @@ function UserEdit() {
               label="age"
               name="age"
               type="number"
-              value={credentials.age}
+              value={credentials.age||''}
               onChange={handleChange}
               margin="normal"
               variant="outlined"
@@ -173,7 +160,7 @@ function UserEdit() {
               label="city"
               name="city"
               type="text"
-              value={credentials.city}
+              value={credentials.city||''}
               onChange={handleChange}
               margin="normal"
               variant="outlined"

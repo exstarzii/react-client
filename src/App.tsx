@@ -7,6 +7,7 @@ import User from './Pages/User';
 import ErrorPage from './Pages/ErrorPage';
 import UserEdit from './Pages/UserEdit';
 import People from './Pages/People';
+import Friends from './Pages/Friends';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/user/:id" element={<User />}/>
         <Route path="/useredit" element={<UserEdit />}/>
         <Route path="/people" element={<People />}/>
+        <Route path="/friends" element={<Friends />}/>
         <Route path="/*" element={<ErrorPage/>}/>
       </Routes>
     </BrowserRouter>

@@ -57,9 +57,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function People() {
+function Friends() {
   const navigate = useNavigate();
   const getListItems =(source:[Credentials],nicknamePrefix:string):JSX.Element[]=>{
+    if(source.length <1){
+      return [<Typography variant="h6" align="center" key={0}>
+      While you have no friends
+    </Typography>]
+    }
     return source
     .filter((item) => item.nickname && item.nickname?.indexOf(nicknamePrefix) > -1)
     .map((user, i) => (
@@ -80,7 +85,7 @@ function People() {
       </ListItem>
     ))
   }
-  const [users, setUsers] = api.useGetPeople();
+  const [users, setUsers] = api.useGetFriends();
   const [search, setSearch] = useState("");
   const [usersList, setUsersList] = useState(
     getListItems(users,'')
@@ -101,7 +106,7 @@ function People() {
         <div className="form-container">
           <Paper elevation={2}>
             <Typography variant="h5" align="center" paragraph>
-              Global search
+              My friends
             </Typography>
             <Search>
               <SearchIconWrapper>
@@ -122,4 +127,4 @@ function People() {
     </div>
   );
 }
-export default People;
+export default Friends;
