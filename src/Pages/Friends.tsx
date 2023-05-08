@@ -14,6 +14,8 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Paper from "@mui/material/Paper";
 import api, { Credentials } from "../api";
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -59,45 +61,66 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 function Friends() {
   const navigate = useNavigate();
-  const getListItems =(source:[Credentials],nicknamePrefix:string):JSX.Element[]=>{
-    if(source.length <1){
-      return [<Typography variant="h6" align="center" key={0}>
-      While you have no friends
-    </Typography>]
+  const getListItems = (
+    source: [Credentials],
+    nicknamePrefix: string
+  ): JSX.Element[] => {
+    if (source.length < 1) {
+      return [
+        <Typography variant="h6" align="center" key={0}>
+          While you have no friends
+        </Typography>,
+      ];
     }
     return source
-    .filter((item) => item.nickname && item.nickname?.indexOf(nicknamePrefix) > -1)
-    .map((user, i) => (
-      <ListItem disablePadding key={i}>
-        <ListItemButton
-          onClick={() => {
-            navigate("/user/" + user._id);
-          }}
+      .filter(
+        (item) => item.nickname && item.nickname?.indexOf(nicknamePrefix) > -1
+      )
+      .map((user, i) => (
+        <ListItem
+          disablePadding
+          key={i}
+          secondaryAction={
+            <IconButton edge="end" aria-label="delete" onClick={()=>DelFriendHandle(user._id,i)}>
+              <DeleteIcon />
+            </IconButton>
+          }
         >
-          <ListItemAvatar>
-            <Avatar alt="avatar" src={user.photo} />
-          </ListItemAvatar>
-          <ListItemText
-            primary={user.nickname}
-            secondary={(user.surename||'')+ " " + (user.name||'')}
-          />
-        </ListItemButton>
-      </ListItem>
-    ))
-  }
+          <ListItemButton
+            onClick={() => {
+              navigate("/user/" + user._id);
+            }}
+          >
+            <ListItemAvatar>
+              <Avatar alt="avatar" src={user.photo} />
+            </ListItemAvatar>
+            <ListItemText
+              primary={user.nickname}
+              secondary={(user.surename || "") + " " + (user.name || "")}
+            />
+          </ListItemButton>
+        </ListItem>
+      ));
+  };
   const [users, setUsers] = api.useGetFriends();
   const [search, setSearch] = useState("");
-  const [usersList, setUsersList] = useState(
-    getListItems(users,'')
-  );
+  const [usersList, setUsersList] = useState(getListItems(users, ""));
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
-    setUsersList(getListItems(users,event.target.value))
+    setUsersList(getListItems(users, event.target.value));
   };
   useEffect(() => {
-    setUsersList(getListItems(users,''))
-    console.log('useEffect users')
+    setUsersList(getListItems(users, ""));
+    console.log("useEffect users");
   }, [users]);
+
+  const DelFriendHandle = (id: any,i:number) => {
+    api.useDelFriend(id).then((response: any) => {
+      console.log(response);
+      const nv:any =users.filter((value, index) => index !== i)
+      setUsers(nv);
+    });
+  };
 
   return (
     <div className="page-container">
