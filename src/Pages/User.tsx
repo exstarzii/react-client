@@ -14,6 +14,11 @@ import api from "../api";
 import jwt_decode from "jwt-decode";
 import NotificationBar from "../Components/NotificationBar";
 import { useRef } from "react";
+import Posts from "../Components/Posts";
+import Card from "@mui/material/Card";
+import Box from "@mui/material/Box";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
 
 const rows = [
   {
@@ -73,7 +78,7 @@ function User() {
   rows[8].col2 = credentials.about || "";
 
   const AddFriendHandle = () => {
-    api.useAddFriend(id || "").then((response:any) => {
+    api.useAddFriend(id || "").then((response: any) => {
       console.log(response);
       const ref: any = notifyRef.current;
       ref.showMesssage("Congratulations! Now you have a new friend", "success");
@@ -81,7 +86,7 @@ function User() {
     });
   };
   const DelFriendHandle = () => {
-    api.useDelFriend(id || "").then((response:any) => {
+    api.useDelFriend(id || "").then((response: any) => {
       console.log(response);
       const ref: any = notifyRef.current;
       ref.showMesssage("Deleted", "success");
@@ -95,69 +100,79 @@ function User() {
       <NotificationBar ref={notifyRef} />
       <div className="page-content">
         <div className="form-container">
-          <TableContainer component={Paper}>
-            <Typography variant="h4" align="center">
-              User info
-            </Typography>
-            <Avatar
-              alt="avatar"
-              src={
-                credentials.photo == "" ? "placeholder.png" : credentials.photo
-              }
-              className="avatar"
-            />
-            <Table aria-label="simple table">
-              <TableBody>
-                {rows
-                  .filter((row) => {
-                    return row.col2 > "";
-                  })
-                  .map((row, i) => (
-                    <TableRow
-                      key={i}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {row.col1}
-                      </TableCell>
-                      <TableCell align="right">{row.col2}</TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-            {!id || id == payload.sub ? (
-              <Button
-                type="button"
-                variant="contained"
-                color="primary"
-                fullWidth
-                onClick={() => navigate("/useredit")}
-              >
-                Edit
-              </Button>
-            ) : credentials.friends &&
-              credentials.friends.includes(payload.sub) ? (
-              <Button
-                type="button"
-                variant="contained"
-                color="error"
-                fullWidth
-                onClick={DelFriendHandle}
-              >
-                Delete from friends
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                variant="contained"
-                color="primary"
-                fullWidth
-                onClick={AddFriendHandle}
-              >
-                Add to friends
-              </Button>
-            )}
-          </TableContainer>
+          <Card sx={{ display: "flex" }}>
+            <CardContent sx={{ flex: "1 0 auto" }}>
+              <TableContainer>
+                <Avatar
+                  alt="avatar"
+                  src={
+                    credentials.photo == ""
+                      ? "placeholder.png"
+                      : credentials.photo
+                  }
+                  className="avatar"
+                />
+                <Table aria-label="simple table">
+                  <TableBody>
+                    {rows
+                      .filter((row) => {
+                        return row.col2 > "";
+                      })
+                      .map((row, i) => (
+                        <TableRow
+                          key={i}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {row.col1}
+                          </TableCell>
+                          <TableCell align="right">{row.col2}</TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+                {!id || id == payload.sub ? (
+                  <Button
+                    type="button"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    onClick={() => navigate("/useredit")}
+                  >
+                    Edit
+                  </Button>
+                ) : credentials.friends &&
+                  credentials.friends.includes(payload.sub) ? (
+                  <Button
+                    type="button"
+                    variant="contained"
+                    color="error"
+                    fullWidth
+                    onClick={DelFriendHandle}
+                  >
+                    Delete from friends
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    onClick={AddFriendHandle}
+                  >
+                    Add to friends
+                  </Button>
+                )}
+              </TableContainer>
+            </CardContent>
+          </Card>
+          <Posts
+            edit={!id || id == payload.sub}
+            id={id || payload.sub}
+            user={credentials}
+          />
         </div>
       </div>
     </div>

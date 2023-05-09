@@ -66,11 +66,7 @@ function Friends() {
     nicknamePrefix: string
   ): JSX.Element[] => {
     if (source.length < 1) {
-      return [
-        <Typography variant="h6" align="center" key={0}>
-          While you have no friends
-        </Typography>,
-      ];
+      return [];
     }
     return source
       .filter(
@@ -127,6 +123,10 @@ function Friends() {
       <Layout />
       <div className="page-content">
         <div className="form-container">
+          {users.length <1?(
+        <Typography variant="h6" align="center" key={0}>
+          While you have no friends
+        </Typography>):(
           <Paper elevation={2}>
             <Typography variant="h5" align="center" paragraph>
               My friends
@@ -144,7 +144,7 @@ function Friends() {
             </Search>
             <Divider />
             <List>{usersList}</List>
-          </Paper>
+          </Paper>)}
         </div>
       </div>
     </div>

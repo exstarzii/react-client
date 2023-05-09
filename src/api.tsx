@@ -14,7 +14,15 @@ export interface Credentials {
   sex?: string;
   city?: string;
   about?: string;
-  friends?:[string];
+  friends?: [string];
+}
+export interface Post {
+  _id?: string;
+  text?: string;
+  likes?: [string];
+  image?: string;
+  date?: string;
+  author?: string;
 }
 const useGetUser = (): [Credentials, Dispatch<SetStateAction<Credentials>>] => {
   return useGetUserById("");
@@ -117,7 +125,7 @@ const useAddFriend = (id: string) => {
     .post(
       `${API_URL}/user/friends`,
       {
-        _id:id,
+        _id: id,
       },
       {
         headers: {
@@ -131,15 +139,79 @@ const useAddFriend = (id: string) => {
 const useDelFriend = (id: string) => {
   const token = localStorage.token;
   return axios
-    .delete(
-      `${API_URL}/user/friends/${id}`,
-      {
+    .delete(`${API_URL}/user/friends/${id}`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    })
+    .catch((error) => handleError(error));
+};
+
+const useGetPosts = (
+  userId: string
+): [[Post], Dispatch<SetStateAction<[Post]>>] => {
+  const [posts, setPosts] = useState<[Post]>([{}]);
+  useEffect(() => {
+    const token = localStorage.token;
+    axios
+      .get(`${API_URL}/user/${userId}/post`, {
         headers: {
           Authorization: "Bearer " + token,
         },
-      }
-    )
-    .catch((error) => handleError(error));
+      })
+      .then((response) => {
+        console.log(response);
+        setPosts(response.data);
+      })
+      .catch((error) => handleError(error));
+  }, [userId]);
+  return [posts, setPosts];
+};
+
+const useCreatePost = (userId: string, body: any) => {
+  const token = localStorage.token;
+  return axios.post(
+    `${API_URL}/user/${userId}/post`,
+    {
+      ...body,
+    },
+    {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    }
+  );
+};
+
+const useDeletePost = (userId: string, id: any) => {
+  const token = localStorage.token;
+  return axios.delete(`${API_URL}/user/${userId}/post/${id}`, {
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+};
+
+const useLikePost = (userId: string, id: any) => {
+  const token = localStorage.token;
+  return axios.post(
+    `${API_URL}/user/${userId}/post/${id}/like`,
+    {},
+    {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    }
+  );
+};
+
+const useDislikePost = (userId: string, id: any) => {
+  const token = localStorage.token;
+  return axios.delete(`${API_URL}/user/${userId}/post/${id}/like`, {
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
 };
 
 function handleError(error: any) {
@@ -153,5 +225,10 @@ export default {
   useGetUserById,
   useAddFriend,
   useGetFriends,
-  useDelFriend
+  useDelFriend,
+  useGetPosts,
+  useCreatePost,
+  useDeletePost,
+  useLikePost,
+  useDislikePost
 };

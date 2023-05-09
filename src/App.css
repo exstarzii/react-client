@@ -1,3 +1,6 @@
+body{
+  background-color: aliceblue;
+}
 .page-container {
   display: grid;
   grid-template-rows: 64px auto;
@@ -13,7 +16,7 @@
 }
 
 .form-container {
-  width: 300px;
+  min-width: 300px;
   padding: 10px;
 }
 
@@ -29,4 +32,10 @@ div.avatar {
 }
 .cursor-pointer{
   cursor: pointer;
+}
+.post-container{
+  padding: 10px;
+}
+.post, .margin10{
+  margin: 15px 0;
 }
