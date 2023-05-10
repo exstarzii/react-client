@@ -100,7 +100,7 @@ function User() {
       <NotificationBar ref={notifyRef} />
       <div className="page-content">
         <div className="form-container">
-          <Card sx={{ display: "flex" }}>
+          <Card sx={{ display: "flex",boxSizing:'border-box',width:'100%'}}>
             <CardContent sx={{ flex: "1 0 auto" }}>
               <TableContainer>
                 <Avatar

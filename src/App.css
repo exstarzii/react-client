@@ -19,7 +19,7 @@ body{
 }
 
 .form-container {
-  min-width: 300px;
+  width: 400px;
   padding: 10px;
 }
 .form-login{
@@ -44,4 +44,9 @@ div.avatar {
 }
 .post, .margin10{
   margin: 15px 0;
+}
+p.help-text{
+  margin-top: 10px;
+  color: darkgray;
+  font-size: 12px;
 }

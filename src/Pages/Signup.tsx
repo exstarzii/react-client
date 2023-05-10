@@ -83,6 +83,12 @@ function Signup() {
               Sign up
             </Button>
           </form>
+          <Typography variant="body1" className="help-text">
+            После регистрации на указанный телефон будет совершен звонок,
+             последние 4 цифры которого будут являться кодом для входа.<br/>
+             Так же вы можете войти под тестовым аккаунтом<br/>
+             exstarzii<br/>
+             4321</Typography>
         </div>
       </div>
     </div>
