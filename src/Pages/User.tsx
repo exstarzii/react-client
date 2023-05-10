@@ -101,7 +101,7 @@ function User() {
       <div className="page-content">
         <div className="form-container">
           <Card sx={{ display: "flex",boxSizing:'border-box',width:'100%'}}>
-            <CardContent sx={{ flex: "1 0 auto" }}>
+            <CardContent sx={{ flex: "1 0 auto",boxSizing:'border-box',width:'100%' }}>
               <TableContainer>
                 <Avatar
                   alt="avatar"
