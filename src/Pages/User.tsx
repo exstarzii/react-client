@@ -170,7 +170,8 @@ function User() {
           </Card>
           <Posts
             edit={!id || id == payload.sub}
-            id={id || payload.sub}
+            urlId={id}
+            currentUserId = {payload.sub}
             user={credentials}
           />
         </div>

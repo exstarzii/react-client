@@ -14,10 +14,16 @@ body{
   justify-content: center;
   height: 100%;
 }
+.page-post{
+  align-items: start;
+}
 
 .form-container {
   min-width: 300px;
   padding: 10px;
+}
+.form-login{
+  width: 300px;
 }
 
 .drawer-content {

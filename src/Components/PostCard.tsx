@@ -11,7 +11,7 @@ import Avatar from "@mui/material/Avatar";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import Popper, { PopperPlacementType } from "@mui/material/Popper";
+import Popper from "@mui/material/Popper";
 import Fade from "@mui/material/Fade";
 
 const PostCard = (props: any) => {
@@ -23,11 +23,11 @@ const PostCard = (props: any) => {
     setAnchorEl(event.currentTarget);
     setOpen(!open);
   };
-  const isLiked = props.post.likes&& props.post.likes.includes(props.userId);
+  const isLiked = props.post.likes&& props.post.likes.includes(props.currentUserId);
   const like = () => {
     isLiked
-      ? props.handleDislikePost(props.post._id, props.i)
-      : props.handleLikePost(props.post._id, props.i);
+      ? props.handleDislikePost(props.post.author._id,props.post._id, props.i)
+      : props.handleLikePost(props.post.author._id,props.post._id, props.i)
   };
 
   return (
@@ -36,7 +36,7 @@ const PostCard = (props: any) => {
         avatar={
           <Avatar
             alt="avatar"
-            src={props.user.photo == "" ? "placeholder.png" : props.user.photo}
+            src={props.post.author.photo? props.post.author.photo:"placeholder.png" }
           />
         }
         action={
@@ -74,11 +74,11 @@ const PostCard = (props: any) => {
           </IconButton>
         }
         title={
-          props.user.surename && props.user.name
-            ? props.user.surename + " " + props.user.name
-            : props.user.nickname
+          props.post.author.surename && props.post.author.name
+            ? props.post.author.surename + " " + props.post.author.name
+            : props.post.author.nickname
         }
-        subheader={new Date(Date.parse(props.post.date || "")).toLocaleString()}
+        subheader={new Date(props.post.date || "").toLocaleString()}
       />
       {props.post.image ? (
         <CardMedia

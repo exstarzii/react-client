@@ -21,8 +21,8 @@ export interface Post {
   text?: string;
   likes?: [string];
   image?: string;
-  date?: string;
-  author?: string;
+  date?: number;
+  author?: any;
 }
 const useGetUser = (): [Credentials, Dispatch<SetStateAction<Credentials>>] => {
   return useGetUserById("");
@@ -149,8 +149,8 @@ const useDelFriend = (id: string) => {
 
 const useGetPosts = (
   userId: string
-): [[Post], Dispatch<SetStateAction<[Post]>>] => {
-  const [posts, setPosts] = useState<[Post]>([{}]);
+): [Post[], Dispatch<SetStateAction<Post[]>>] => {
+  const [posts, setPosts] = useState<Post[]>([]);
   useEffect(() => {
     const token = localStorage.token;
     axios
@@ -192,10 +192,10 @@ const useDeletePost = (userId: string, id: any) => {
   });
 };
 
-const useLikePost = (userId: string, id: any) => {
+const useLikePost = (postOwnerId: string, postId: any) => {
   const token = localStorage.token;
   return axios.post(
-    `${API_URL}/user/${userId}/post/${id}/like`,
+    `${API_URL}/user/${postOwnerId}/post/${postId}/like`,
     {},
     {
       headers: {
@@ -205,13 +205,34 @@ const useLikePost = (userId: string, id: any) => {
   );
 };
 
-const useDislikePost = (userId: string, id: any) => {
+const useDislikePost = (postOwnerId: string, postId: any) => {
   const token = localStorage.token;
-  return axios.delete(`${API_URL}/user/${userId}/post/${id}/like`, {
+  return axios.delete(`${API_URL}/user/${postOwnerId}/post/${postId}/like`, {
     headers: {
       Authorization: "Bearer " + token,
     },
   });
+};
+
+const useGetFriendsPosts = (
+  userId: string
+): [Post[], Dispatch<SetStateAction<Post[]>>] => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  useEffect(() => {
+    const token = localStorage.token;
+    axios
+      .get(`${API_URL}/user/${userId}/post/friends`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setPosts(response.data);
+      })
+      .catch((error) => handleError(error));
+  }, [userId]);
+  return [posts, setPosts];
 };
 
 function handleError(error: any) {
@@ -230,5 +251,6 @@ export default {
   useCreatePost,
   useDeletePost,
   useLikePost,
-  useDislikePost
+  useDislikePost,
+  useGetFriendsPosts
 };

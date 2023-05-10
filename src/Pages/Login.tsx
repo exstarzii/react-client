@@ -46,7 +46,7 @@ function Login() {
       <Layout />
       <NotificationBar ref={notifyRef} />
       <div className="page-content">
-        <div className="form-container">
+        <div className="form-container form-login">
           <form onSubmit={handleSubmit}>
             <Typography variant="h4" align="center">
               Login

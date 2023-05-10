@@ -45,7 +45,7 @@ const Layout = () => {
   ));
   const authlinksList = [
     {
-      title: "Account details",
+      title: "Account",
       icon: <PersonIcon/>,
       link: "/user",
     },

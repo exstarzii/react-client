@@ -14,7 +14,9 @@ import TextareaAutosize from "@mui/material/TextareaAutosize";
 function Posts(props: any) {
   const notifyRef = useRef(null);
   const inputRef = useRef(null);
-  const [posts, setPosts] = api.useGetPosts(props.id);
+  const [posts, setPosts] = props.allUsers
+    ? api.useGetFriendsPosts(props.currentUserId)
+    : api.useGetPosts(props.urlId||props.currentUserId);
   const [newpost, setNewpost] = useState<Post>({
     text: "",
     image: "",
@@ -28,7 +30,7 @@ function Posts(props: any) {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    api.useCreatePost(props.id, newpost).then((res) => {
+    api.useCreatePost(props.currentUserId, newpost).then((res) => {
       setNewpost({ text: "", image: "" });
       console.log(res);
       posts.unshift(res.data);
@@ -36,7 +38,13 @@ function Posts(props: any) {
       setPostCards(getPostCards());
       const ref: any = notifyRef.current;
       ref.showMesssage("Post created", "success");
-    });
+    })
+    .catch((err)=>{
+      const mes = err.response.data.message;
+      console.log(mes);
+      const ref: any = notifyRef.current;
+      ref.showMesssage(mes || err.message, "error");
+    })
   };
   const handleFileUpload = (event: any) => {
     const reader = new FileReader();
@@ -51,7 +59,7 @@ function Posts(props: any) {
     ref.click();
   };
   const handlePostDelete = (postId: any, i: number) => {
-    api.useDeletePost(props.id, postId).then((res) => {
+    api.useDeletePost(props.currentUserId, postId).then((res) => {
       console.log(res);
       posts.splice(i, 1);
       setPosts(posts);
@@ -60,36 +68,38 @@ function Posts(props: any) {
       ref.showMesssage("Post deleted", "success");
     });
   };
-  const handleLikePost = (postId: any, i: number) => {
-    api.useLikePost(props.id, postId).then((res) => {
+  const handleLikePost = (postOwnerId:any,postId: any, i: number) => {
+    api.useLikePost(postOwnerId, postId).then((res) => {
       console.log(res);
-      posts[i] =res.data;
+      posts[i] = res.data;
       setPosts(posts);
       setPostCards(getPostCards());
     });
   };
-  const handleDislikePost = (postId: any, i: number) => {
-    api.useDislikePost(props.id, postId).then((res) => {
+  const handleDislikePost = (postOwnerId:any,postId: any, i: number) => {
+    api.useDislikePost(postOwnerId, postId).then((res) => {
       console.log(res);
-      posts[i] =res.data;
+      posts[i] = res.data;
       setPosts(posts);
       setPostCards(getPostCards());
     });
   };
-  const getPostCards = () =>
-    posts.map((post, i) => (
-      <PostCard
-        user={props.user}
-        edit={props.edit}
-        userId={props.id}
-        post={post}
-        key={post._id}
-        i={i}
-        handlePostDelete={handlePostDelete}
-        handleLikePost={handleLikePost}
-        handleDislikePost={handleDislikePost}
-      />
-    ));
+  const getPostCards = () => {
+    if (posts.length<1) return;
+    return posts
+      .map((post, i) => (
+        <PostCard
+          edit={props.edit}
+          post={post}
+          currentUserId={props.currentUserId}
+          key={post._id}
+          i={i}
+          handlePostDelete={handlePostDelete}
+          handleLikePost={handleLikePost}
+          handleDislikePost={handleDislikePost}
+        />
+      ));
+  };
   // const postCards= getPostCards()
   const [postCards, setPostCards] = useState<JSX.Element[]>();
   useEffect(() => {
@@ -102,7 +112,11 @@ function Posts(props: any) {
       {props.edit ? (
         <Card className="post" key={-1}>
           <form onSubmit={handleSubmit}>
-            <Typography sx={{ fontSize: 14 }} align="center" color="text.secondary">
+            <Typography
+              sx={{ fontSize: 14 }}
+              align="center"
+              color="text.secondary"
+            >
               New post
             </Typography>
             {newpost.image ? (

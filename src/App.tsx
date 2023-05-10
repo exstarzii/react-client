@@ -8,6 +8,7 @@ import ErrorPage from './Pages/ErrorPage';
 import UserEdit from './Pages/UserEdit';
 import People from './Pages/People';
 import Friends from './Pages/Friends';
+import Post from './Pages/Post';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/useredit" element={<UserEdit />}/>
         <Route path="/people" element={<People />}/>
         <Route path="/friends" element={<Friends />}/>
+        <Route path="/posts" element={<Post />}/>
         <Route path="/*" element={<ErrorPage/>}/>
       </Routes>
     </BrowserRouter>
