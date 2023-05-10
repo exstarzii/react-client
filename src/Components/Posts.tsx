@@ -40,7 +40,9 @@ function Posts(props: any) {
       ref.showMesssage("Post created", "success");
     })
     .catch((err)=>{
-      const mes = err.response.data.message;
+      const mes = Array.isArray(err.response.data.message)
+      ? err.response.data.message.join(", ")
+      : err.response.data.message;
       console.log(mes);
       const ref: any = notifyRef.current;
       ref.showMesssage(mes || err.message, "error");

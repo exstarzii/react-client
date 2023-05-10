@@ -34,7 +34,9 @@ function Login() {
       localStorage.setItem("token", token);
       navigate("/user");
     } catch (error: any) {
-      const mes = error.response.data.message.join(", ");
+      const mes = Array.isArray(error.response.data.message)
+      ? error.response.data.message.join(", ")
+      : error.response.data.message;
       console.log(mes);
       const ref: any = notifyRef.current;
       ref.showMesssage(mes || error.message, "error");
