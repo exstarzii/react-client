@@ -107,7 +107,7 @@ function User() {
                   alt="avatar"
                   src={
                     credentials.photo == ""
-                      ? "placeholder.png"
+                      ? ""
                       : credentials.photo
                   }
                   className="avatar"

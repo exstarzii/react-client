@@ -36,7 +36,7 @@ const PostCard = (props: any) => {
         avatar={
           <Avatar
             alt="avatar"
-            src={props.post.author.photo? props.post.author.photo:"placeholder.png" }
+            src={props.post.author.photo? props.post.author.photo:"" }
           />
         }
         action={

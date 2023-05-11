@@ -65,7 +65,7 @@ function UserEdit() {
                 alt="avatar"
                 src={
                   credentials.photo == ""
-                    ? "placeholder.png"
+                    ? ""
                     : credentials.photo
                 }
                 className="avatar cursor-pointer"
